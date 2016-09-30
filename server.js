@@ -33,11 +33,20 @@ app.get('/', (req, res) => {
 });
 
 const messageSchema = schemapack.build({
-  text: 'string'
+  text: 'string',
+  room: 'string'
 });
+
+let rooms = [
+  'Lobby',
+  'Random',
+  'Staff'
+];
 
 io.on('connection', function(socket){
   console.log('a user connected');
+
+  socket.emit('rooms', rooms);
 
   socket.on('chat message', (buffer) => {
     io.emit('chat message', buffer);

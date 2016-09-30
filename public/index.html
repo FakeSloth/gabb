@@ -12,10 +12,20 @@
   </head>
   <body>
     <div class="chat">
-      <div class="messages"></div>
-      <form class="message-form">
-        <input type="text" class="message-input">
-      </form>
+      <div class="room-tabs">
+      </div>
+
+      <div class="room-contents">
+      </div>
+
+      <div id="message-template" class="hidden">
+        <p>Content {name}</p>
+        <div class="messages"></div>
+        <form class="message-form">
+          <input type="text" class="message-input">
+        </form>
+      </div>
+
     </div>
 
     <script src="/socket.io/socket.io.js"></script>
