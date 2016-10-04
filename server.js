@@ -57,7 +57,8 @@ io.on('connection', function(socket){
   });
 });
 
-server.listen(3000, (err) => {
+const port = process.env.PORT || 3000;
+server.listen(port, (err) => {
   if (err) console.log(err);
-  console.log('==> Listening on port %s in %s mode.', 3000, app.get('env'));
+  console.log('==> Listening on port %s in %s mode.', port, app.get('env'));
 });
