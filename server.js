@@ -38,18 +38,26 @@ const messageSchema = schemapack.build({
 });
 
 let rooms = [
-  'Lobby',
-  'Random',
-  'Staff'
+  'Lobby'
 ];
 
-io.on('connection', function(socket){
+io.on('connection', function(socket) {
   console.log('a user connected');
 
-  socket.emit('rooms', rooms);
+  socket.emit('load rooms', rooms);
+  rooms.forEach(room => socket.join(room));
 
   socket.on('chat message', (buffer) => {
-    io.emit('chat message', buffer);
+    const messageObject = messageSchema.decode(buffer);
+    const text = messageObject.text;
+    if (text.substr(0, 5) === '/join') {
+      const parts = text.split(' ');
+      console.log(parts);
+      socket.join(parts[1]);
+      socket.emit('join room', parts[1]);
+    } else {
+      io.to(messageObject.room).emit('chat message', buffer);
+    }
   });
 
   socket.on('disconnect', function(){

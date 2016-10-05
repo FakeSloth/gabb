@@ -21,19 +21,18 @@ function handleChatMessageInput($input) {
     if (!value) return;
 
     var buffer = messageSchema.encode({text: value, room: state.currentRoom});
-    console.log('encoded buffer', buffer);
     socket.emit('chat message', buffer);
 
     $input.value = '';
   }
 }
 
-$roomTabs.addEventListener('click', function(e) {
-  var currentRoom = e.target.getAttribute('room');
+function joinRoom(currentRoom) {
   var room = state.rooms[currentRoom];
   room.tab.classList.add('selected');
   console.log(room.content);
   room.content.classList.remove('hidden');
+  room.content.querySelector('.message-input').focus();
 
   state.currentRoom = currentRoom;
 
@@ -45,8 +44,11 @@ $roomTabs.addEventListener('click', function(e) {
     r.tab.classList.remove('selected');
     r.content.classList.add('hidden');
   }
+}
 
-  // note add server side join room functionality and move this function to support command /join
+$roomTabs.addEventListener('click', function(e) {
+  var currentRoom = e.target.getAttribute('room');
+  joinRoom(currentRoom);
 });
 
 function createRoom(room) {
@@ -68,10 +70,17 @@ function createRoom(room) {
   state.rooms[room] = {tab: $roomTab, content: $roomContent};
 }
 
-socket.on('rooms', function(rooms) {
-  for (var i = 0; i < rooms.length; i++) {
+socket.on('load rooms', function(rooms) {
+  var length = rooms.length
+  for (var i = 0; i < length; i++) {
     createRoom(rooms[i]);
   }
+  joinRoom(rooms[length - 1]);
+});
+
+socket.on('join room', function(room) {
+  createRoom(room);
+  joinRoom(room);
 });
 
 socket.on('chat message', function(buffer) {
