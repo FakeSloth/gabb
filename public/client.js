@@ -79,7 +79,7 @@ socket.on('load rooms', function(rooms) {
 });
 
 socket.on('join room', function(room) {
-  createRoom(room);
+  if (!state.rooms[room]) createRoom(room);
   joinRoom(room);
 });
 
