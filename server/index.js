@@ -7,9 +7,8 @@ const compress = require('compression');
 const express = require('express');
 const http = require('http');
 const path = require('path');
-const schemapack = require('schemapack');
 const socketio = require('socket.io');
-const winston = require('winston');
+const log = require('winston').info;
 
 const config = require('./config');
 const routes = require('./routes');
@@ -51,9 +50,5 @@ sockets(io);
 
 server.listen(config.port, err => {
   if (err) console.log(err);
-  winston.info(
-    '==> Listening on port %s in %s mode.',
-    config.port,
-    app.get('env')
-  );
+  log('==> Listening on port %s in %s mode.', config.port, app.get('env'));
 });
